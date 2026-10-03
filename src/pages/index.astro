@@ -7,14 +7,11 @@ import CallToAction from '../components/CallToAction.astro';
 
 // Get featured properties and zones
 const featuredProperties = await getCollection('properties', (entry) => entry.data.featured);
-const allProperties = await getCollection('properties');
 const zones = await getCollection('zones');
 
 // Limit featured properties to 3 for homepage
 const homeFeaturedProperties = featuredProperties.slice(0, 3);
 
-// Get unique zones from properties
-const availableZones = [...new Set(allProperties.map(p => p.data.zone))];
 ---
 
 <Layout
@@ -98,7 +95,7 @@ const availableZones = [...new Set(allProperties.map(p => p.data.zone))];
               </div>
             </div>
             <a
-              href={`/zones/${zone.slug}`}
+              href={`/zones/${zone.id}`}
               class="block mt-4 text-center text-primary hover:text-primary-soft transition-colors font-medium"
             >
               Explore {zone.data.title} →

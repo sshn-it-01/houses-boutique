@@ -114,21 +114,25 @@
 
 <script>
   // Handle contact form submission
-  document.getElementById('contact-form')?.addEventListener('submit', function(e) {
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (!form) {
+    throw new Error('Contact form not found');
+  }
+
+  const successMessage = document.getElementById('form-success') as HTMLElement | null;
+  const errorMessage = document.getElementById('form-error') as HTMLElement | null;
+
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const form = this;
-    const successMessage = document.getElementById('form-success');
-    const errorMessage = document.getElementById('form-error');
-
     // Hide any existing messages
-    successMessage.classList.add('hidden');
-    errorMessage.classList.add('hidden');
+    successMessage?.classList.add('hidden');
+    errorMessage?.classList.add('hidden');
 
     // Simulate form submission (replace with actual form handling)
     setTimeout(() => {
       // Show success message
-      successMessage.classList.remove('hidden');
+      successMessage?.classList.remove('hidden');
       // Reset form
       form.reset();
       // Scroll to top of form

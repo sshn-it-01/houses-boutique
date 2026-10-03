@@ -8,10 +8,10 @@ import { Bed, Bath, Ruler } from '@lucide/astro';
 interface Props {
   property: CollectionEntry<'properties'>;
   showZone?: boolean;
-  compact?: boolean;
 }
 
-const { property, showZone = true, compact = false } = Astro.props;
+const { property, showZone = true } = Astro.props;
+const propertySlug = property.id;
 
 const formatPrice = (price: number, currency: string = 'USD') => {
   return new Intl.NumberFormat('en-US', {
@@ -34,7 +34,7 @@ const getStatusBadgeClass = (status: string) => {
 ---
 
 <!-- Property Card Component -->
-<article data-property-slug={property.slug} class="bg-white rounded-lg overflow-hidden elegant-shadow hover:elegant-shadow-lg transition-shadow duration-300">
+<article data-property-slug={propertySlug} class="bg-white rounded-lg overflow-hidden elegant-shadow hover:elegant-shadow-lg transition-shadow duration-300">
   <!-- Image Section -->
   <div class="relative">
     <img
@@ -75,7 +75,7 @@ const getStatusBadgeClass = (status: string) => {
 
     <!-- Title -->
     <h3 class="text-lg font-semibold text-neutral-dark mb-1">
-      <a href={`/properties/${property.slug}`} class="hover:text-primary transition-colors">
+      <a href={`/properties/${propertySlug}`} class="hover:text-primary transition-colors">
         {property.data.title}
       </a>
     </h3>
@@ -115,7 +115,7 @@ const getStatusBadgeClass = (status: string) => {
 
     <!-- CTA Button -->
     <a
-      href={`/properties/${property.slug}`}
+      href={`/properties/${propertySlug}`}
       class="block w-full text-center bg-primary-soft text-primary-lightest py-2 rounded-sm hover:bg-primary transition-colors mt-4"
     >
       View Details

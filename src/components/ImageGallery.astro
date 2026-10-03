@@ -26,7 +26,7 @@ const lightboxImages = images.map((image, index) => ({
     {images.map((image, index) => (
       <div
         class="gallery-item relative overflow-hidden rounded-lg aspect-square group cursor-pointer"
-        onClick={() => openLightbox(index)}
+        onclick={`openLightbox(${index})`}
         data-index={index}
       >
         <img
@@ -208,9 +208,9 @@ const lightboxImages = images.map((image, index) => ({
   }
 
   // Event listeners
-  document.querySelectorAll('[data-index]').forEach(item => {
-    item.addEventListener('click', function() {
-      const index = parseInt(this.getAttribute('data-index'));
+  document.querySelectorAll('[data-index]').forEach((item) => {
+    item.addEventListener('click', () => {
+      const index = Number(item.dataset.index ?? 0);
       openLightbox(index);
     });
   });

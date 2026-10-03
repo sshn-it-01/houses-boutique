@@ -1,16 +1,21 @@
-import type { CollectionEntry } from 'astro:content';
-import { z, defineCollection } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
+import { glob } from 'astro/loaders';
 
-// Define collection schemas
 const propertiesSchema = z.object({
   title: z.string(),
   zone: z.string(),
   price: z.number(),
   originalPrice: z.number().optional(),
   currency: z.string().default('USD'),
+  meta: z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    keywords: z.array(z.string()).optional()
+  }).optional(),
   bedrooms: z.number(),
   bathrooms: z.number(),
-  size: z.number(), // in square meters
+  size: z.number(),
   sizeUnit: z.string().default('m²'),
   description: z.string(),
   featured: z.boolean().default(false),
@@ -39,6 +44,11 @@ const zonesSchema = z.object({
   overview: z.string(),
   image: z.string(),
   thumbnail: z.string().optional(),
+  meta: z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    keywords: z.array(z.string()).optional()
+  }).optional(),
   mapEmbedUrl: z.string().optional(),
   coordinates: z.object({
     center: z.object({
@@ -49,7 +59,7 @@ const zonesSchema = z.object({
   }).optional(),
   features: z.array(z.string()).optional(),
   averagePrice: z.number().optional(),
-  properties: z.array(z.string()).optional() // Array of property slugs
+  properties: z.array(z.string()).optional()
 });
 
 const agentsSchema = z.object({
@@ -66,14 +76,17 @@ const agentsSchema = z.object({
   experience: z.string().optional()
 });
 
-// Define collections
-const propertiesCollection = defineCollection({ schema: propertiesSchema });
-const zonesCollection = defineCollection({ schema: zonesSchema });
-const agentsCollection = defineCollection({ schema: agentsSchema });
-
-// Export collection definitions
 export const collections = {
-  properties: propertiesCollection,
-  zones: zonesCollection,
-  agents: agentsCollection
+  properties: defineCollection({
+    loader: glob({ pattern: '**/*.md', base: './src/content/properties' }),
+    schema: propertiesSchema
+  }),
+  zones: defineCollection({
+    loader: glob({ pattern: '**/*.md', base: './src/content/zones' }),
+    schema: zonesSchema
+  }),
+  agents: defineCollection({
+    loader: glob({ pattern: '**/*.md', base: './src/content/agents' }),
+    schema: agentsSchema
+  })
 };

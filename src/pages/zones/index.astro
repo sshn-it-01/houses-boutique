@@ -52,7 +52,7 @@ const getZoneProperties = (zoneTitle: string, limit: number = 3) => {
         <div class="flex flex-wrap gap-2">
           {zones.map((zone) => (
             <a
-              href={`#${zone.slug}`}
+              href={`#${zone.id}`}
               class="px-4 py-2 rounded-full border border-neutral-300 text-neutral-dark hover:border-primary hover:text-primary transition-colors"
             >
               {zone.data.title}
@@ -67,7 +67,7 @@ const getZoneProperties = (zoneTitle: string, limit: number = 3) => {
   {zones.map((zone) => {
     const zoneProperties = getZoneProperties(zone.data.title);
     return (
-      <section id={zone.slug} class="py-16 bg-white">
+      <section id={zone.id} class="py-16 bg-white">
         <div class="container mx-auto px-4">
           <!-- Zone Header with Map -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
@@ -105,11 +105,11 @@ const getZoneProperties = (zoneTitle: string, limit: number = 3) => {
                           {formatPrice(zone.data.averagePrice)}
                         </p>
                       </div>
-                      {zone.data.propertyCount && (
+                      {zoneProperties.length > 0 && (
                         <div class="text-right">
                           <p class="text-sm font-medium">Available Properties</p>
                           <p class="text-2xl font-bold">
-                            {zone.data.propertyCount}
+                            {zoneProperties.length}
                           </p>
                         </div>
                       )}
@@ -118,7 +118,7 @@ const getZoneProperties = (zoneTitle: string, limit: number = 3) => {
                 )}
 
                 <a
-                  href={`/zones/${zone.slug}`}
+                  href={`/zones/${zone.id}`}
                   class="inline-flex items-center bg-primary-soft text-primary-lightest px-6 py-3 rounded-sm hover:bg-primary transition-colors font-medium"
                 >
                   Explore {zone.data.title}
@@ -154,7 +154,7 @@ const getZoneProperties = (zoneTitle: string, limit: number = 3) => {
                   Featured Properties in {zone.data.title}
                 </h3>
                 <a
-                  href={`/zones/${zone.slug}`}
+                  href={`/zones/${zone.id}`}
                   class="text-primary hover:text-primary-soft transition-colors font-medium flex items-center"
                 >
                   View All Properties

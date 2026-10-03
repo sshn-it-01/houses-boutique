@@ -10,7 +10,7 @@ import CallToAction from '../../components/CallToAction.astro';
 export async function getStaticPaths() {
   const properties = await getCollection('properties');
   return properties.map((property) => ({
-    params: { slug: property.slug },
+    params: { slug: property.id },
     props: { property }
   }));
 }
@@ -39,9 +39,9 @@ const formatNumber = (num: number) => {
 };
 
 // Generate gallery images from property data or use defaults
-const hasImages = property.data.images && Array.isArray(property.data.images) && property.data.images.length > 0;
+const hasImages = Array.isArray(property.data.images) && property.data.images.length > 0;
 const galleryImages = hasImages
-  ? property.data.images.map((img: string, index: number) => ({
+  ? property.data.images!.map((img: string, index: number) => ({
       src: img.replace('w=800&h=600', 'w=1200&h=800'),
       thumb: img,
       caption: index === 0 ? `${property.data.title} - Main View` : `${property.data.title} - Image ${index + 1}`,
@@ -49,10 +49,12 @@ const galleryImages = hasImages
     }))
   : [];
 
+const propertySlug = property.id;
+
 // Get related properties (same zone, excluding current)
 const allProperties = await getCollection('properties');
 const relatedProperties = allProperties
-  .filter(p => p.data.zone === property.data.zone && p.slug !== property.slug)
+  .filter(p => p.data.zone === property.data.zone && p.id !== property.id)
   .slice(0, 3);
 ---
 
@@ -78,7 +80,7 @@ const relatedProperties = allProperties
           </p>
         </div>
 
-        <ImageGallery images={galleryImages} id={`property-gallery-${property.slug}`} />
+        <ImageGallery images={galleryImages} id={`property-gallery-${propertySlug}`} />
       </div>
     </section>
   )}
@@ -247,7 +249,7 @@ const relatedProperties = allProperties
                         {formatPrice(relatedProperty.data.price, relatedProperty.data.currency)}
                       </p>
                       <a
-                        href={`/properties/${relatedProperty.slug}`}
+                        href={`/properties/${relatedProperty.id}`}
                         class="text-primary hover:text-primary-soft transition-colors text-sm font-medium"
                       >
                         View Property →
@@ -266,7 +268,7 @@ const relatedProperties = allProperties
           <div class="lg:sticky lg:top-24 lg:self-start lg:z-30">
             <ContactAgent
               agent={agentData?.data}
-              propertySlug={property.slug}
+              propertySlug={propertySlug}
               compact={true}
             />
           </div>

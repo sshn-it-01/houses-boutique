@@ -6,23 +6,9 @@ import CallToAction from '../../components/CallToAction.astro';
 
 // Get all properties and zones
 const allProperties = await getCollection('properties');
-const zones = await getCollection('zones');
-
-// Helper function to format price
-const formatPrice = (price: number, currency: string = 'USD') => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency,
-    maximumFractionDigits: 0
-  }).format(price);
-};
 
 // Get unique values for filters
 const uniqueZones = [...new Set(allProperties.map(p => p.data.zone))];
-const minPrice = Math.min(...allProperties.map(p => p.data.price));
-const maxPrice = Math.max(...allProperties.map(p => p.data.price));
-const maxBedrooms = Math.max(...allProperties.map(p => p.data.bedrooms));
-const maxBathrooms = Math.max(...allProperties.map(p => p.data.bathrooms));
 
 // Pagination
 const PROPERTIES_PER_PAGE = 9;
@@ -322,7 +308,7 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
 
 <script define:vars={{ allProperties: allProperties.map(p => ({
     ...p.data,
-    slug: p.slug,
+    slug: p.id,
     price: p.data.price
   })) }}>
   // Filter and Sort functionality
@@ -330,7 +316,7 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
 
   // Debug: log the structure of the data
   console.log('All properties data structure:', allPropertiesData.map(p => ({
-    slug: p.slug,
+    slug: p.id,
     title: p.title,
     hasData: !!p.data,
     price: p.data?.price,
@@ -359,24 +345,24 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
   function applyFilters() {
     filteredProperties = allProperties.filter(property => {
       // Zone filter
-      if (zoneFilter.value && property.zone !== zoneFilter.value) {
+      if (zoneFilter && zoneFilter.value && property.zone !== zoneFilter.value) {
         return false;
       }
 
       // Price filter
-      const minPrice = parseInt(minPriceFilter.value) || 0;
-      const maxPrice = parseInt(maxPriceFilter.value) || Infinity;
+      const minPrice = minPriceFilter ? parseInt(minPriceFilter.value) || 0 : 0;
+      const maxPrice = maxPriceFilter ? parseInt(maxPriceFilter.value) || Infinity : Infinity;
       if (property.price < minPrice || property.price > maxPrice) {
         return false;
       }
 
       // Bedrooms filter
-      if (bedroomsFilter.value && property.bedrooms < parseInt(bedroomsFilter.value)) {
+      if (bedroomsFilter && bedroomsFilter.value && property.bedrooms < parseInt(bedroomsFilter.value)) {
         return false;
       }
 
       // Bathrooms filter
-      if (bathroomsFilter.value && property.bathrooms < parseInt(bathroomsFilter.value)) {
+      if (bathroomsFilter && bathroomsFilter.value && property.bathrooms < parseInt(bathroomsFilter.value)) {
         return false;
       }
 
@@ -388,7 +374,7 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
   }
 
   function applySorting() {
-    const sortBy = sortSelect.value;
+    const sortBy = sortSelect ? sortSelect.value : 'featured';
 
     // Debug: log current filtered properties
     console.log('Properties before sorting:', filteredProperties.map(p => ({
@@ -473,6 +459,7 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
     }
 
     // Get all property cards
+    if (!propertiesGrid) return;
     const allPropertyCards = Array.from(propertiesGrid.querySelectorAll('[data-property-slug]'));
 
     if (filteredProperties.length === 0) {
@@ -508,7 +495,7 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
     }
 
     // Get slugs of filtered properties in order
-    const filteredSlugs = filteredProperties.map(p => p.slug);
+    const filteredSlugs = filteredProperties.map(p => p.id);
     console.log('Attempting to reorder cards. Filtered slugs:', filteredSlugs);
 
     // Hide all property cards first
@@ -536,12 +523,12 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
     console.log('Clearing all filters...');
 
     // Reset all filter values
-    zoneFilter.value = '';
-    minPriceFilter.value = '';
-    maxPriceFilter.value = '';
-    bedroomsFilter.value = '';
-    bathroomsFilter.value = '';
-    sortSelect.value = 'featured';
+    if (zoneFilter) zoneFilter.value = '';
+    if (minPriceFilter) minPriceFilter.value = '';
+    if (maxPriceFilter) maxPriceFilter.value = '';
+    if (bedroomsFilter) bedroomsFilter.value = '';
+    if (bathroomsFilter) bathroomsFilter.value = '';
+    if (sortSelect) sortSelect.value = 'featured';
 
     // Reset filtered properties to all properties
     filteredProperties = [...allPropertiesData];

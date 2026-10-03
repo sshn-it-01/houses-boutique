@@ -1,6 +1,8 @@
 ---
+import type { CollectionEntry } from 'astro:content';
+
 interface Props {
-  zones: Array<any>;
+  zones: Array<CollectionEntry<'zones'>>;
 }
 const { zones } = Astro.props as Props;
 ---
@@ -16,7 +18,7 @@ const { zones } = Astro.props as Props;
       {zones.map((relatedZone) => (
         <div class="group">
           <a
-            href={`/zones/${relatedZone.slug}`}
+            href={`/zones/${relatedZone.id}`}
             class="block cursor-pointer"
             title={`Explore ${relatedZone.data.title}`}
             aria-label={`Explore ${relatedZone.data.title}`}
@@ -36,7 +38,7 @@ const { zones } = Astro.props as Props;
             </div>
           </a>
           <a
-            href={`/zones/${relatedZone.slug}`}
+            href={`/zones/${relatedZone.id}`}
             class="block mt-4 text-center text-primary hover:text-primary-soft transition-colors font-medium"
             aria-label={`Explore ${relatedZone.data.title}`}
           >

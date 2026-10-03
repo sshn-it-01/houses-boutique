@@ -8,15 +8,14 @@ interface Props {
     email: string;
     phone: string;
     image: string;
-    languages: string[];
-    specialties: string[];
-    experience: string;
+    languages?: string[];
+    specialties?: string[];
+    experience?: string;
   };
-  onSelectAgent: (agentName: string) => void;
   selected?: boolean;
 }
 
-const { agent, onSelectAgent, selected = false } = Astro.props;
+const { agent, selected = false } = Astro.props;
 ---
 
 <div class={`bg-white rounded-lg border-2 transition-all duration-300 overflow-hidden ${
@@ -46,14 +45,17 @@ const { agent, onSelectAgent, selected = false } = Astro.props;
     </p>
 
     <!-- Experience -->
+    {agent.experience && (
     <div class="flex items-center mb-4">
       <svg class="w-5 h-5 text-primary mr-2" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
       </svg>
       <span class="text-primary-dark font-medium">{agent.experience}</span>
     </div>
+    )}
 
     <!-- Languages -->
+    {agent.languages?.length > 0 && (
     <div class="mb-4">
       <div class="flex items-center mb-2">
         <svg class="w-5 h-5 text-primary mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -69,8 +71,10 @@ const { agent, onSelectAgent, selected = false } = Astro.props;
         ))}
       </div>
     </div>
+    )}
 
     <!-- Specialties -->
+    {agent.specialties?.length > 0 && (
     <div class="mb-6">
       <div class="flex items-center mb-2">
         <svg class="w-5 h-5 text-primary mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -86,6 +90,7 @@ const { agent, onSelectAgent, selected = false } = Astro.props;
         ))}
       </div>
     </div>
+    )}
 
     <!-- Contact Button -->
     <button

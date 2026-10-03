@@ -2,12 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import AgentCard from '../components/AgentCard.astro';
 import AgentContactForm from '../components/AgentContactForm.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const agents = await getCollection('agents');
   return agents.map((agent) => ({
-    params: { slug: agent.slug },
+    params: { slug: agent.id },
     props: { agent }
   }));
 }
@@ -82,7 +82,6 @@ const agentsForForm = agents.map(agent => ({
         {agents.map((agent) => (
           <AgentCard
             agent={agent.data}
-            onSelectAgent={agent.data.name}
             selected={false}
           />
         ))}
@@ -151,24 +150,21 @@ const agentsForForm = agents.map(agent => ({
 </Layout>
 
 <script>
-  let selectedAgent = '';
-
   // Function to select an agent
-  function selectAgent(agentName) {
-    selectedAgent = agentName;
+  function selectAgent(agentName: string) {
 
     // Update form dropdown
-    const agentSelect = document.getElementById('agent-select');
+    const agentSelect = document.getElementById('agent-select') as HTMLSelectElement | null;
     if (agentSelect) {
       agentSelect.value = agentName;
     }
 
     // Update all cards to show selected state
     const agentCards = document.querySelectorAll('#agents-grid > div');
-    agentCards.forEach((card, index) => {
+    agentCards.forEach((card) => {
       const agentNameElement = card.querySelector('.text-white.text-xl.font-bold');
       if (agentNameElement) {
-        const cardAgentName = agentNameElement.textContent;
+        const cardAgentName = agentNameElement.textContent ?? '';
         const button = card.querySelector('button');
         if (button) {
           if (cardAgentName === agentName) {
@@ -190,33 +186,24 @@ const agentsForForm = agents.map(agent => ({
   }
 
   // Make the function globally available
-  window.selectAgent = selectAgent;
+  Object.assign(window, { selectAgent });
 
   // Handle form submission
   document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('agent-contact-form');
+    const form = document.getElementById('agent-contact-form') as HTMLFormElement | null;
     if (form) {
       form.addEventListener('submit', function(e) {
         e.preventDefault();
 
         // Get form data
         const formData = new FormData(form);
-        const agent = formData.get('agent');
-        const firstName = formData.get('firstName');
-        const lastName = formData.get('lastName');
-        const email = formData.get('email');
-        const phone = formData.get('phone');
-        const messageType = formData.get('messageType');
-        const message = formData.get('message');
-        const contactMethod = formData.get('contactMethod');
+        const agent = String(formData.get('agent') ?? '');
+        const firstName = String(formData.get('firstName') ?? '');
+        const contactMethod = String(formData.get('contactMethod') ?? 'email');
 
-        // Here you would typically send the data to your backend
-        // For now, we'll just show a success message
         alert(`Thank you ${firstName}! Your message has been sent to ${agent}. We'll contact you soon via ${contactMethod}.`);
 
-        // Reset form
         form.reset();
-        selectedAgent = '';
       });
     }
   });

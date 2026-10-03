@@ -18,13 +18,11 @@ const { agent, propertySlug, compact = false } = Astro.props;
 ---
 
 {agent && (
-  <!-- Contact Agent Component -->
   <section class="bg-white rounded-lg elegant-shadow p-6">
     <h2 class="text-xl font-semibold text-primary-dark mb-4">
       Contact Agent
     </h2>
 
-    <!-- Agent Info -->
     <div class="flex items-center space-x-3 mb-4">
       <img
         src={agent.image}
@@ -37,7 +35,6 @@ const { agent, propertySlug, compact = false } = Astro.props;
       </div>
     </div>
 
-    <!-- Quick Contact Info -->
     <div class="space-y-2 mb-6 text-sm">
       <div class="flex items-center text-neutral-light">
         <svg class="w-4 h-4 mr-2 text-primary-pale" fill="currentColor" viewBox="0 0 20 20">
@@ -58,7 +55,6 @@ const { agent, propertySlug, compact = false } = Astro.props;
       </div>
     </div>
 
-    <!-- Contact Form -->
     <form class="space-y-4" method="POST" action="/api/contact">
       <input type="hidden" name="agent" value={agent.name} />
       {propertySlug && <input type="hidden" name="property" value={propertySlug} />}
@@ -126,7 +122,6 @@ const { agent, propertySlug, compact = false } = Astro.props;
     </button>
   </form>
 
-    <!-- Additional Info -->
     <div class="mt-6 pt-4 border-t border-primary-faint">
       <p class="text-xs text-neutral-light text-center">
         Available 7 days a week for showings and consultations
