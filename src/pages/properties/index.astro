@@ -301,31 +301,17 @@ const paginatedProperties = allProperties.slice(startIndex, endIndex);
   }
 
   /* Ensure hidden property cards don't affect grid layout */
-  [data-property-slug].hidden {
+  :global([data-property-slug].hidden) {
     display: none !important;
   }
 </style>
 
 <script define:vars={{ allProperties: allProperties.map(p => ({
     ...p.data,
-    slug: p.id,
-    price: p.data.price
+    id: p.id
   })) }}>
   // Filter and Sort functionality
   let allPropertiesData = allProperties;
-
-  // Debug: log the structure of the data
-  console.log('All properties data structure:', allPropertiesData.map(p => ({
-    slug: p.id,
-    title: p.title,
-    hasData: !!p.data,
-    price: p.data?.price,
-    bedrooms: p.data?.bedrooms,
-    bathrooms: p.data?.bathrooms,
-    size: p.data?.size,
-    featured: p.data?.featured,
-    createdAt: p.data?.createdAt
-  })));
 
   let filteredProperties = [...allPropertiesData];
   let currentPage = 1;
